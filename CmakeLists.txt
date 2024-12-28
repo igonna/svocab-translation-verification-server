@@ -1,0 +1,31 @@
+cmake_minimum_required(VERSION 3.5)
+project(svocab-app-translator CXX)
+
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+set(CMAKE_CXX_STANDARD 20)
+include(CheckIncludeFileCXX)
+
+check_include_file_cxx(any HAS_ANY)
+check_include_file_cxx(string_view HAS_STRING_VIEW)
+check_include_file_cxx(coroutine HAS_COROUTINE)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+message(STATUS "macos")
+set(CMAKE_CXX_COMPILER "/opt/homebrew/Cellar/gcc/14.2.0/bin/g++-14")
+list(APPEND CMAKE_PREFIX_PATH "/opt/homebrew/opt/icu4c")
+set(ICU_INCLUDE "/opt/homebrew/opt/icu4c/include")
+
+include_directories(/usr/local/include)
+link_directories(/usr/local/lib)
+
+find_package(Drogon CONFIG REQUIRED)
+find_package(ICU COMPONENTS uc io REQUIRED)
+
+include_directories(${ICU_INCLUDE})
+
+# Add the executable with all the source files
+add_executable(${PROJECT_NAME} main.cpp)
+
+target_link_libraries(${PROJECT_NAME} PRIVATE Drogon::Drogon ${ICU_LIBRARIES})
